@@ -12,6 +12,7 @@ COPY package*.json ./
 RUN npm install --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
 COPY server ./server
+COPY database ./database
 EXPOSE 3001
 USER node
 CMD ["node","server/index.js"]
