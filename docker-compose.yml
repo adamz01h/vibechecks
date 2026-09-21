@@ -11,6 +11,7 @@ services:
       DB_USER: ${DB_USER:-vibechecks}
       DB_PASSWORD: ${DB_PASSWORD:-vibechecks-change-me}
       DB_NAME: ${DB_NAME:-vibechecks}
+    command: ["sh","-c","npm run migrate && node server/index.js"]
     depends_on:
       db:
         condition: service_healthy
@@ -27,7 +28,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-change-me}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL","mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 5s
