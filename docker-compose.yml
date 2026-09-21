@@ -1,0 +1,44 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3001}:3001"
+    environment:
+      PORT: 3001
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-vibechecks}
+      DB_PASSWORD: ${DB_PASSWORD:-vibechecks-change-me}
+      DB_NAME: ${DB_NAME:-vibechecks}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - vibechecks
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-vibechecks}
+      MYSQL_USER: ${DB_USER:-vibechecks}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-vibechecks-change-me}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-change-me}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL","mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks:
+      - vibechecks
+
+volumes:
+  mysql_data:
+
+networks:
+  vibechecks:
