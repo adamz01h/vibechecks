@@ -1,6 +1,6 @@
 FROM node:22-alpine AS build
 WORKDIR /app
-RUN apk add --no-cache python3 py3-pip git
+RUN apk add --no-cache python3 py3-pip git build-base python3-dev
 COPY package*.json ./
 RUN npm install
 COPY . .
