@@ -8,7 +8,8 @@
     "dev:server": "node --watch server/index.js",
     "dev:web": "vite",
     "start": "node server/index.js",
-    "build": "vite build"
+    "build": "vite build",
+    "migrate": "node server/migrate.js"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "latest",
